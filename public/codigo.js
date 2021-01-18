@@ -1,5 +1,6 @@
 /* Acceso a los elementos de trabajo */
 const boton_login = document.getElementById("login");
+const tabla_cuerpo = document.querySelector("#tabla tbody");
 
 /* Cargamos el token desde el almacenamiento del navegador */
 let token = localStorage.getItem("token");
@@ -30,6 +31,7 @@ function obtener_twitch_id() {
         localStorage.setItem('twitch_id', respuesta.data[0].id);
         console.log("Almacenando ID Twitch: ", respuesta.data[0].id);
         obtener_videos();
+        twitch_id = respuesta.data[0].id;
     })
     .catch((respuesta, error) => {
         /* En caso de error mostramos la información necesaria */
@@ -39,6 +41,7 @@ function obtener_twitch_id() {
 
 function obtener_videos() {
     if (videos !== null) {
+        mostrar_videos();
         return;
     }
     var url = new URL("https://api.twitch.tv/helix/videos");
@@ -60,6 +63,75 @@ function obtener_videos() {
         console.log("Respuesta recibida: ", respuesta);
         localStorage.setItem('videos', JSON.stringify(respuesta.data));
         console.log("Almacenando videos: ", respuesta.data);
+        videos = respuesta.data;
+        mostrar_videos();
+    })
+    .catch((respuesta, error) => {
+        /* En caso de error mostramos la información necesaria */
+        console.log(respuesta, error);
+    });
+}
+
+function mostrar_videos() {
+    if (videos === null) {
+        return;
+    }
+    console.log("Mostrando vídeos");
+    while ((hijo = tabla_cuerpo.firstChild) !== null) {
+        tabla_cuerpo.removeChild(hijo);
+    }
+    videos.forEach(video => {
+        let linea = document.createElement("tr");
+        let num = document.createElement("th");
+        let nombre = document.createElement("td");
+        let fecha = document.createElement("td");
+        let accion = document.createElement("td");
+        let boton = document.createElement("button");
+        boton.addEventListener("click", actualizar_video);
+        num.innerText = video.id;
+        nombre.innerText = video.title;
+        fecha.innerText = video.published_at;
+        boton.dataset.id = video.id;
+        boton.innerText = "Actualizar";
+        accion.appendChild(boton);
+        linea.appendChild(num);
+        linea.appendChild(nombre);
+        linea.appendChild(fecha);
+        linea.appendChild(accion);
+        tabla_cuerpo.appendChild(linea);
+        console.log(video);
+    });
+}
+
+function actualizar_video(e) {
+    const video = videos.filter(video => video.id == e.target.dataset.id);
+    if (video.length === 0) {
+        return;
+    }
+    console.log(video[0]);
+    let titulo = video[0].title;
+    titulo = video[0].published_at.replace("T", " ").substr(0, 16) + " " + titulo;
+    console.log("Nuevo título: ", titulo);
+    var url = new URL("https://api.twitch.tv/kraken/videos/" + e.target.dataset.id);
+    url.searchParams.append("title", titulo);
+    console.log("URL de la llamada al API: ", url.href);
+    console.log(video);
+    fetch(
+        url.href,
+        {
+            method: 'PUT',
+            headers: {
+                "Accept": "application/vnd.twitchtv.v5+json",
+                "Authorization": "OAuth " + token
+            }
+        }
+    )
+    .then(respuesta => respuesta.json())
+    .then(respuesta => {
+        /* Mostramos por consola la salida */
+        console.log("Respuesta recibida: ", respuesta);
+        videos = null;
+        obtener_videos();
     })
     .catch((respuesta, error) => {
         /* En caso de error mostramos la información necesaria */
@@ -87,7 +159,6 @@ function twitch_test() {
         /* En caso de error mostramos la información necesaria */
         console.log(respuesta, error);
     });
-    
 }
 
 /* Si tenemos token de acceso ocultamos el botón */
