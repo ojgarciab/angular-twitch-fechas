@@ -4,9 +4,13 @@ const boton_login = document.getElementById("login");
 /* Cargamos el token desde el almacenamiento del navegador */
 let token = localStorage.getItem("token");
 console.log("Cargado token almacenado: ", token);
+let twitch_id = localStorage.getItem("twitch_id");
+console.log("Cargado ID Twitch almacenado: ", twitch_id);
 
-/* Prueba de funcionalidad del API */
-function twitch_test() {
+function obtener_twitch_id() {
+    if (twitch_id !== null) {
+        return;
+    }
     fetch(
         "https://api.twitch.tv/helix/users",
         {
@@ -20,11 +24,17 @@ function twitch_test() {
     .then(respuesta => {
         /* Mostramos por consola la salida */
         console.log("Respuesta recibida: ", respuesta);
+        localStorage.setItem('twitch_id', respuesta.data[0].id);
+        console.log("Almacenando ID Twitch: ", respuesta.data[0].id);
     })
     .catch((respuesta, error) => {
         /* En caso de error mostramos la información necesaria */
         console.log(respuesta, error);
     });
+}
+
+/* Prueba de funcionalidad del API */
+function twitch_test() {
     fetch(
         "https://api.twitch.tv/kraken",
         {
@@ -51,6 +61,7 @@ if (token !== null) {
     boton_login.style.display = "none";
     /* Lanzamos una petición para comprobar la validez del token */
     twitch_test();
+    obtener_twitch_id();
 }
 
 /* Funcionalidad de comunicación con la ventana de inicio de sesión */
@@ -64,12 +75,12 @@ window.addEventListener("message", evento => {
         /* Guardamos las credenciales */
         token = evento.data.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1]
         localStorage.setItem('token', token);
-        console.log("Almacenando token: ", evento.data, token);
+        console.log("Almacenando token: ", token);
     }
 }, false);
 
 /* Preparamos la funcionalidad de inicio de sesión */
-const scope = "openid channel_read";
+const scope = "openid channel_read channel_editor";
 let aleatorio = Math.random(0).toString(36).substr(2);;
 console.log("Aleatorio: ", aleatorio);
 
