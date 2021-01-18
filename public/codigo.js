@@ -1,5 +1,59 @@
+/* Acceso a los elementos de trabajo */
+const boton_login = document.getElementById("login");
+
+/* Cargamos el token desde el almacenamiento del navegador */
+let token = localStorage.getItem("token");
+console.log("Cargado token almacenado: ", token);
+
+/* Prueba de funcionalidad del API */
+function twitch_test() {
+    fetch(
+        "https://api.twitch.tv/helix/users",
+        {
+            "headers": {
+                "Client-ID": clientId,
+                "Authorization": "Bearer " + token
+            }
+        }
+    )
+    .then(respuesta => respuesta.json())
+    .then(respuesta => {
+        /* Mostramos por consola la salida */
+        console.log("Respuesta recibida: ", respuesta);
+    })
+    .catch((respuesta, error) => {
+        /* En caso de error mostramos la información necesaria */
+        console.log(respuesta, error);
+    });
+    fetch(
+        "https://api.twitch.tv/kraken",
+        {
+            "headers": {
+                "Accept": "application/vnd.twitchtv.v5+json",
+                "Authorization": "OAuth " + token
+            }
+        }
+    )
+    .then(respuesta => respuesta.json())
+    .then(respuesta => {
+        /* Mostramos por consola la salida */
+        console.log("Respuesta recibida: ", respuesta);
+    })
+    .catch((respuesta, error) => {
+        /* En caso de error mostramos la información necesaria */
+        console.log(respuesta, error);
+    });
+    
+}
+
+/* Si tenemos token de acceso ocultamos el botón */
+if (token !== null) {
+    boton_login.style.display = "none";
+    /* Lanzamos una petición para comprobar la validez del token */
+    twitch_test();
+}
+
 /* Funcionalidad de comunicación con la ventana de inicio de sesión */
-let token = false;
 let win = false;
 window.addEventListener("message", evento => {
     if (evento.origin == location.origin) {
@@ -10,13 +64,11 @@ window.addEventListener("message", evento => {
         /* Guardamos las credenciales */
         token = evento.data.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1]
         localStorage.setItem('token', token);
-        console.log(evento.data, token);
+        console.log("Almacenando token: ", evento.data, token);
     }
 }, false);
 
 /* Preparamos la funcionalidad de inicio de sesión */
-const boton_login = document.getElementById("login");
-
 const scope = "openid channel_read";
 let aleatorio = Math.random(0).toString(36).substr(2);;
 console.log("Aleatorio: ", aleatorio);
