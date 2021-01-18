@@ -6,9 +6,12 @@ let token = localStorage.getItem("token");
 console.log("Cargado token almacenado: ", token);
 let twitch_id = localStorage.getItem("twitch_id");
 console.log("Cargado ID Twitch almacenado: ", twitch_id);
+let videos = JSON.parse(localStorage.getItem("videos"));
+console.log("Cargado listado de vídeos almacenados: ", videos);
 
 function obtener_twitch_id() {
     if (twitch_id !== null) {
+        obtener_videos();
         return;
     }
     fetch(
@@ -26,6 +29,37 @@ function obtener_twitch_id() {
         console.log("Respuesta recibida: ", respuesta);
         localStorage.setItem('twitch_id', respuesta.data[0].id);
         console.log("Almacenando ID Twitch: ", respuesta.data[0].id);
+        obtener_videos();
+    })
+    .catch((respuesta, error) => {
+        /* En caso de error mostramos la información necesaria */
+        console.log(respuesta, error);
+    });
+}
+
+function obtener_videos() {
+    if (videos !== null) {
+        return;
+    }
+    var url = new URL("https://api.twitch.tv/helix/videos");
+    url.searchParams.append("user_id", twitch_id);
+    url.searchParams.append("first", 100);
+    console.log("URL de la llamada al API: ", url.href);
+    fetch(
+        url.href,
+        {
+            "headers": {
+                "Client-ID": clientId,
+                "Authorization": "Bearer " + token
+            }
+        }
+    )
+    .then(respuesta => respuesta.json())
+    .then(respuesta => {
+        /* Mostramos por consola la salida */
+        console.log("Respuesta recibida: ", respuesta);
+        localStorage.setItem('videos', JSON.stringify(respuesta.data));
+        console.log("Almacenando videos: ", respuesta.data);
     })
     .catch((respuesta, error) => {
         /* En caso de error mostramos la información necesaria */
