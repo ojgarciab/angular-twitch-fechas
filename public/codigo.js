@@ -30,8 +30,8 @@ function obtener_twitch_id() {
         console.log("Respuesta recibida: ", respuesta);
         localStorage.setItem('twitch_id', respuesta.data[0].id);
         console.log("Almacenando ID Twitch: ", respuesta.data[0].id);
-        obtener_videos();
         twitch_id = respuesta.data[0].id;
+        obtener_videos();
     })
     .catch((respuesta, error) => {
         /* En caso de error mostramos la información necesaria */
@@ -176,11 +176,15 @@ window.addEventListener("message", evento => {
         /* Cerramos la ventana de inicio de sesión */
         if (win !== false) {
             win.close();
+            /* Marcamos la ventana como cerrada */
+            win = false;
         }
         /* Guardamos las credenciales */
         token = evento.data.match(/\#(?:access_token)\=([\S\s]*?)\&/)[1]
         localStorage.setItem('token', token);
         console.log("Almacenando token: ", token);
+        boton_login.style.display = "none";
+        obtener_twitch_id();
     }
 }, false);
 
