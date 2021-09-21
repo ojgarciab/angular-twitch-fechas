@@ -2,35 +2,41 @@
 <html lang="es">
   <head>
     <!-- Meta tags requeridos -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
     <!-- CSS de Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
 
-    <title>Título de ejemplo</title>
+    <!-- CSS de la página -->
+    <link rel="stylesheet" href="estilos.css" />
+
+    <title>Renombrar vídeos de Twitch</title>
   </head>
-  <body style="padding-top: 2rem;">
+  <body>
     <div class="container">
-      <h1>Título</h1>
-      <p class="lead">Plantilla de ejemplo con Bootstrap y jQuery.</p>
-      <button id="login" class="btn btn-primary">Inicio de sesión en Twitch</button>
-      <table class="table" id="tabla">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Nombre</th>
-            <th scope="col">Fecha</th>
-            <th scope="col">Acción</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">-</th>
-            <td colspan="3">Cargando...</td>
-          </tr>
-        </tbody>
+      <h2>Aplicación para renombrar vídeos de Twitch</h2>
+      <div id="paso1">
+        <p><button id="boton_login" class="btn btn-primary">Inicio de sesión en Twitch</button></p>
+      </div>
+      <div id="paso2">
+        <table class="table" id="tabla">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Fecha</th>
+              <th scope="col">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="tabla_cuerpo">
+            <tr>
+              <th scope="row">-</th>
+              <td colspan="3">Cargando...</td>
+            </tr>
+          </tbody>
         </table>
+      </div>
     </div>
 
     <!-- JavaScript opcional -->
