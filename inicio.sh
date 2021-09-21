@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mv docs public
+ln -s docs public
 
 cat <<EOF > public/config.js
 const clientId = "$TWITCH_CLIENTID";
