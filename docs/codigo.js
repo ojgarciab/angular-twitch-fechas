@@ -1,7 +1,3 @@
-/* Acceso a los elementos de trabajo */
-const boton_login = document.getElementById("login");
-const tabla_cuerpo = document.querySelector("#tabla tbody");
-
 /* Cargamos el token desde el almacenamiento del navegador */
 let token = localStorage.getItem("token");
 console.log("Cargado token almacenado: ", token);
@@ -40,6 +36,7 @@ function obtener_twitch_id() {
 }
 
 function obtener_videos() {
+    paso2.style.display = "block";
     if (videos !== null) {
         mostrar_videos();
         return;
