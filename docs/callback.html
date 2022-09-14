@@ -1,6 +1,9 @@
 <script>
-    /* Enviamos un mensaje de vuelta a la ventana original */
-    window.opener.postMessage(document.location.hash);
+    /* Comprobamos que el origen sea el autorizado */
+    if (window.opener.location.host === window.location.host) {
+        /* Enviamos un mensaje de vuelta a la ventana original */
+        window.opener.postMessage(document.location.hash);
+    }
     /* Aunque la ventana original nos cerrará, nosotros lo haremos antes */
-    //window.close();
+    window.close();
 </script>
